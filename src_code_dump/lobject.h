@@ -57,11 +57,11 @@ typedef struct GCheader {
 ** Union of all Lua values
 */
 typedef union {
-  GCObject *gc;//GC类型
-  void *p;
-  lua_Number n;//浮点
-  int b;//布尔
-} Value;//非GC数据
+  GCObject *gc;//GC类型大于等于4
+  void *p;//轻量级指针2
+  lua_Number n;//浮点3
+  int b;//布尔1
+} Value;//所有数据类型
 
 
 /*
@@ -75,30 +75,30 @@ typedef struct lua_TValue {
 } TValue;
 
 
-/* Macros to test type */
-#define ttisnil(o)	(ttype(o) == LUA_TNIL)
-#define ttisnumber(o)	(ttype(o) == LUA_TNUMBER)
-#define ttisstring(o)	(ttype(o) == LUA_TSTRING)
-#define ttistable(o)	(ttype(o) == LUA_TTABLE)
-#define ttisfunction(o)	(ttype(o) == LUA_TFUNCTION)
-#define ttisboolean(o)	(ttype(o) == LUA_TBOOLEAN)
-#define ttisuserdata(o)	(ttype(o) == LUA_TUSERDATA)
-#define ttisthread(o)	(ttype(o) == LUA_TTHREAD)
-#define ttislightuserdata(o)	(ttype(o) == LUA_TLIGHTUSERDATA)
+/* Macros to test type *///识别类型
+#define ttisnil(o)	(ttype(o) == LUA_TNIL)//是空类型吗0
+#define ttisnumber(o)	(ttype(o) == LUA_TNUMBER)//是浮点吗3
+#define ttisstring(o)	(ttype(o) == LUA_TSTRING)//是字符串吗4
+#define ttistable(o)	(ttype(o) == LUA_TTABLE)//是表吗5
+#define ttisfunction(o)	(ttype(o) == LUA_TFUNCTION)//是函数吗6
+#define ttisboolean(o)	(ttype(o) == LUA_TBOOLEAN)//是布尔吗1
+#define ttisuserdata(o)	(ttype(o) == LUA_TUSERDATA)//是指针吗7
+#define ttisthread(o)	(ttype(o) == LUA_TTHREAD)//是协程吗8
+#define ttislightuserdata(o)	(ttype(o) == LUA_TLIGHTUSERDATA)//是轻量级指针吗2
 
-/* Macros to access values */
-#define ttype(o)	((o)->tt)
-#define gcvalue(o)	check_exp(iscollectable(o), (o)->value.gc)
-#define pvalue(o)	check_exp(ttislightuserdata(o), (o)->value.p)
-#define nvalue(o)	check_exp(ttisnumber(o), (o)->value.n)
-#define rawtsvalue(o)	check_exp(ttisstring(o), &(o)->value.gc->ts)
-#define tsvalue(o)	(&rawtsvalue(o)->tsv)
-#define rawuvalue(o)	check_exp(ttisuserdata(o), &(o)->value.gc->u)
-#define uvalue(o)	(&rawuvalue(o)->uv)
-#define clvalue(o)	check_exp(ttisfunction(o), &(o)->value.gc->cl)
-#define hvalue(o)	check_exp(ttistable(o), &(o)->value.gc->h)
-#define bvalue(o)	check_exp(ttisboolean(o), (o)->value.b)
-#define thvalue(o)	check_exp(ttisthread(o), &(o)->value.gc->th)
+/* Macros to access values *///提取类型值
+#define ttype(o)	((o)->tt)//存储的类型
+#define gcvalue(o)	check_exp(iscollectable(o), (o)->value.gc)//GC值60行
+#define pvalue(o)	check_exp(ttislightuserdata(o), (o)->value.p)//轻量级指针61行
+#define nvalue(o)	check_exp(ttisnumber(o), (o)->value.n)//浮点值62行
+#define rawtsvalue(o)	check_exp(ttisstring(o), &(o)->value.gc->ts)//字符串lstate.h 145行
+#define tsvalue(o)	(&rawtsvalue(o)->tsv)//字符串206行
+#define rawuvalue(o)	check_exp(ttisuserdata(o), &(o)->value.gc->u)//指针lstate.h 146行
+#define uvalue(o)	(&rawuvalue(o)->uv)//指针222行
+#define clvalue(o)	check_exp(ttisfunction(o), &(o)->value.gc->cl)//函数lstate.h 147行
+#define hvalue(o)	check_exp(ttistable(o), &(o)->value.gc->h)//函数表lstate.h 148行
+#define bvalue(o)	check_exp(ttisboolean(o), (o)->value.b)//布尔 63行
+#define thvalue(o)	check_exp(ttisthread(o), &(o)->value.gc->th)//协程lstate.h 151行
 
 #define l_isfalse(o)	(ttisnil(o) || (ttisboolean(o) && bvalue(o) == 0))
 
@@ -113,47 +113,47 @@ typedef struct lua_TValue {
   ((ttype(obj) == (obj)->value.gc->gch.tt) && !isdead(g, (obj)->value.gc)))
 
 
-/* Macros to set values */
-#define setnilvalue(obj) ((obj)->tt=LUA_TNIL)
+/* Macros to set values *///初始化类型
+#define setnilvalue(obj) ((obj)->tt=LUA_TNIL)//空类型0
 
 #define setnvalue(obj,x) \
-  { TValue *i_o=(obj); i_o->value.n=(x); i_o->tt=LUA_TNUMBER; }
+  { TValue *i_o=(obj); i_o->value.n=(x); i_o->tt=LUA_TNUMBER; }//浮点3
 
 #define setpvalue(obj,x) \
-  { TValue *i_o=(obj); i_o->value.p=(x); i_o->tt=LUA_TLIGHTUSERDATA; }
+  { TValue *i_o=(obj); i_o->value.p=(x); i_o->tt=LUA_TLIGHTUSERDATA; }//轻量级指针2
 
 #define setbvalue(obj,x) \
-  { TValue *i_o=(obj); i_o->value.b=(x); i_o->tt=LUA_TBOOLEAN; }
+  { TValue *i_o=(obj); i_o->value.b=(x); i_o->tt=LUA_TBOOLEAN; }//布尔1
 
 #define setsvalue(L,obj,x) \
   { TValue *i_o=(obj); \
     i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TSTRING; \
-    checkliveness(G(L),i_o); }
+    checkliveness(G(L),i_o); }//字符串4
 
 #define setuvalue(L,obj,x) \
   { TValue *i_o=(obj); \
     i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TUSERDATA; \
-    checkliveness(G(L),i_o); }
+    checkliveness(G(L),i_o); }//指针7
 
 #define setthvalue(L,obj,x) \
   { TValue *i_o=(obj); \
     i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TTHREAD; \
-    checkliveness(G(L),i_o); }
+    checkliveness(G(L),i_o); }//协程8
 
 #define setclvalue(L,obj,x) \
   { TValue *i_o=(obj); \
     i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TFUNCTION; \
-    checkliveness(G(L),i_o); }
+    checkliveness(G(L),i_o); }//函数6
 
 #define sethvalue(L,obj,x) \
   { TValue *i_o=(obj); \
     i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TTABLE; \
-    checkliveness(G(L),i_o); }
+    checkliveness(G(L),i_o); }//表5
 
 #define setptvalue(L,obj,x) \
   { TValue *i_o=(obj); \
     i_o->value.gc=cast(GCObject *, (x)); i_o->tt=LUA_TPROTO; \
-    checkliveness(G(L),i_o); }
+    checkliveness(G(L),i_o); }//原型9
 
 
 
@@ -161,7 +161,7 @@ typedef struct lua_TValue {
 #define setobj(L,obj1,obj2) \
   { const TValue *o2=(obj2); TValue *o1=(obj1); \
     o1->value = o2->value; o1->tt=o2->tt; \
-    checkliveness(G(L),o1); }
+    checkliveness(G(L),o1); }//初始化为obj2的类型
 
 
 /*
@@ -186,25 +186,25 @@ typedef struct lua_TValue {
 #define setttype(obj, tt) (ttype(obj) = (tt))
 
 // 只有这些类型的数据 才是可回收的数据
-#define iscollectable(o)	(ttype(o) >= LUA_TSTRING)
+#define iscollectable(o)	(ttype(o) >= LUA_TSTRING)//是GC数据吗？大于等于4
 
 
 
-typedef TValue *StkId;  /* index to stack elements */
+typedef TValue *StkId;  /* index to stack elements *///栈元素的索引
 
 
 /*
 ** String headers for string table
 */
 typedef union TString {
-  L_Umaxalign dummy;  /* ensures maximum alignment for strings */
+  L_Umaxalign dummy;  /* ensures maximum alignment for strings *///替身
   struct {
     CommonHeader;
     lu_byte reserved;
     unsigned int hash;
     size_t len;
-  } tsv;
-} TString;
+  } tsv;//Tstring values
+} TString;//字符串类型4
 
 
 #define getstr(ts)	cast(const char *, (ts) + 1)
@@ -213,14 +213,14 @@ typedef union TString {
 
 // 这里为什么需要使用union类型？
 typedef union Udata {
-  L_Umaxalign dummy;  /* ensures maximum alignment for `local' udata */
+  L_Umaxalign dummy;  /* ensures maximum alignment for `local' udata *///替身
   struct {
     CommonHeader;
     struct Table *metatable;
     struct Table *env;
     size_t len;
   } uv;
-} Udata;
+} Udata;//指针7
 
 
 
@@ -254,7 +254,7 @@ typedef struct Proto {
   lu_byte numparams;
   lu_byte is_vararg;
   lu_byte maxstacksize;
-} Proto;
+} Proto;//原型9
 
 
 /* masks for new-style vararg */
@@ -287,7 +287,7 @@ typedef struct UpVal {
       struct UpVal *next;
     } l;
   } u;
-} UpVal;
+} UpVal;//高价值
 
 
 /*
@@ -315,7 +315,7 @@ typedef struct LClosure {
 typedef union Closure {
   CClosure c;
   LClosure l;
-} Closure;//闭包统称
+} Closure;//闭包统称6
 
 
 #define iscfunction(o)	(ttype(o) == LUA_TFUNCTION && clvalue(o)->c.isC)//是不是C函数？
@@ -328,17 +328,17 @@ typedef union Closure {
 
 typedef union TKey {
   struct {
-    TValuefields;
+    TValuefields;//Value value; int tt
     struct Node *next;  /* for chaining */
   } nk;
   TValue tvk;
-} TKey;
+} TKey;//表键
 
 // 每个节点都有key和val
 typedef struct Node {
-  TValue i_val;
-  TKey i_key;
-} Node;
+  TValue i_val;//值
+  TKey i_key;//键
+} Node;//表结点
 
 
 typedef struct Table {
@@ -351,7 +351,7 @@ typedef struct Table {
   Node *lastfree;  /* any free position is before this position */
   GCObject *gclist;
   int sizearray;  /* size of `array' array */
-} Table;
+} Table;//表5
 
 
 

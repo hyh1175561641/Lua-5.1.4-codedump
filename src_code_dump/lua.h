@@ -80,7 +80,7 @@ typedef void * (*lua_Alloc) (void *ud, void *ptr, size_t osize, size_t nsize);
 #define LUA_TFUNCTION		6//函数，分C函数和lua函数
 #define LUA_TUSERDATA		7//指针，不需要关心生存期
 #define LUA_TTHREAD		8//lua虚拟机，协程
-
+//lobject.h 20行 续
 
 
 /* minimum Lua stack available to a C function */
