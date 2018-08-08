@@ -142,14 +142,14 @@ struct lua_State {
 */
 union GCObject {
   GCheader gch;
-  union TString ts;
-  union Udata u;
-  union Closure cl;
-  struct Table h;
-  struct Proto p;
-  struct UpVal uv;
-  struct lua_State th;  /* thread */
-};
+  union TString ts;//4
+  union Udata u;//7
+  union Closure cl;//6
+  struct Table h;//5
+  struct Proto p;//9
+  struct UpVal uv;//10
+  struct lua_State th;//8  /* thread */
+};//GC类型(大于等于4)
 
 
 /* macros to convert a GCObject into a specific value */

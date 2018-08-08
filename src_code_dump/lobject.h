@@ -25,9 +25,9 @@
 /*
 ** Extra tags for non-values
 */
-#define LUA_TPROTO	(LAST_TAG+1)//9
-#define LUA_TUPVAL	(LAST_TAG+2)//10
-#define LUA_TDEADKEY	(LAST_TAG+3)//11
+#define LUA_TPROTO	(LAST_TAG+1)//9原型
+#define LUA_TUPVAL	(LAST_TAG+2)//10高价值
+#define LUA_TDEADKEY	(LAST_TAG+3)//11废键
 
 
 /*
@@ -57,11 +57,11 @@ typedef struct GCheader {
 ** Union of all Lua values
 */
 typedef union {
-  GCObject *gc;
+  GCObject *gc;//GC类型
   void *p;
-  lua_Number n;
-  int b;
-} Value;
+  lua_Number n;//浮点
+  int b;//布尔
+} Value;//非GC数据
 
 
 /*

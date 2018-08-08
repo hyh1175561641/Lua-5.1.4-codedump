@@ -69,17 +69,17 @@ typedef void * (*lua_Alloc) (void *ud, void *ptr, size_t osize, size_t nsize);
 /*
 ** basic types
 */
-#define LUA_TNONE		(-1)
+#define LUA_TNONE		(-1)//无类型
 
-#define LUA_TNIL		0
-#define LUA_TBOOLEAN		1
-#define LUA_TLIGHTUSERDATA	2
-#define LUA_TNUMBER		3
-#define LUA_TSTRING		4
-#define LUA_TTABLE		5
-#define LUA_TFUNCTION		6
-#define LUA_TUSERDATA		7
-#define LUA_TTHREAD		8
+#define LUA_TNIL		0//空类型
+#define LUA_TBOOLEAN		1//布尔类型
+#define LUA_TLIGHTUSERDATA	2//轻量级指针，自己关心生存期
+#define LUA_TNUMBER		3//数据，浮点
+#define LUA_TSTRING		4//字符串，大于(包括)4需要CG
+#define LUA_TTABLE		5//表
+#define LUA_TFUNCTION		6//函数，分C函数和lua函数
+#define LUA_TUSERDATA		7//指针，不需要关心生存期
+#define LUA_TTHREAD		8//lua虚拟机，协程
 
 
 
