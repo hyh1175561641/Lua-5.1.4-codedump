@@ -24,7 +24,7 @@ typedef LUAI_MEM l_mem;
 
 
 /* chars used as small naturals (so that `char' is reserved for characters) */
-typedef unsigned char lu_byte;
+typedef unsigned char lu_byte;//小范围的自然数0,1,2,3...
 
 
 #define MAX_SIZET	((size_t)(~(size_t)0)-2)

@@ -200,9 +200,9 @@ typedef union TString {
   L_Umaxalign dummy;  /* ensures maximum alignment for strings *///替身
   struct {
     CommonHeader;
-    lu_byte reserved;
-    unsigned int hash;
-    size_t len;
+    lu_byte reserved;//非保留字符串被收回 书P19
+    unsigned int hash;//散列表对比值
+    size_t len;//字符串长度
   } tsv;//Tstring values
 } TString;//字符串类型4
 
