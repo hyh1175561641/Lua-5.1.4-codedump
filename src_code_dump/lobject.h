@@ -199,7 +199,7 @@ typedef TValue *StkId;  /* index to stack elements *///栈元素的索引
 typedef union TString {
   L_Umaxalign dummy;  /* ensures maximum alignment for strings *///替身
   struct {
-    CommonHeader;
+    CommonHeader;//GCObject *next; lu_byte tt; lu_byte marked
     lu_byte reserved;//非保留字符串被收回 书P19
     unsigned int hash;//散列表对比值
     size_t len;//字符串长度

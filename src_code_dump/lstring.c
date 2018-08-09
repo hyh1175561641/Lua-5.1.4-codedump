@@ -20,10 +20,10 @@
 
 // 对保存string的hash桶进行resize
 void luaS_resize (lua_State *L, int newsize) {
-  GCObject **newhash;
-  stringtable *tb;
+  GCObject **newhash;//散列表头首地址 lstate.h 39行
+  stringtable *tb;//散列表头结构体 lstate.h 38行
   int i;
-  if (G(L)->gcstate == GCSsweepstring)
+  if (G(L)->gcstate == GCSsweepstring)//如果处在回收阶段，直接返回
     return;  /* cannot resize during GC traverse */
   newhash = luaM_newvector(L, newsize, GCObject *);
   tb = &G(L)->strt;
