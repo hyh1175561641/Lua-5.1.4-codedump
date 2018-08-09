@@ -15,7 +15,7 @@
 #include "lua.h"
 
 
-typedef LUAI_UINT32 lu_int32;
+typedef LUAI_UINT32 lu_int32;//32位空间
 
 typedef LUAI_UMEM lu_mem;
 

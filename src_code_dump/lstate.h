@@ -36,10 +36,10 @@ struct lua_longjmp;  /* defined in ldo.c */
 
 
 typedef struct stringtable {
-  GCObject **hash;
-  lu_int32 nuse;  /* number of elements */
+  GCObject **hash;//散列表头首地址
+  lu_int32 nuse;  /* number of elements *///字符串总数量
   int size;       // hash桶数组大小
-} stringtable;
+} stringtable;//散列数组
 
 
 /*
@@ -98,7 +98,7 @@ typedef struct global_State {
   UpVal uvhead;  /* head of double-linked list of all open upvalues */
   struct Table *mt[NUM_TAGS];  /* metatables for basic types */
   TString *tmname[TM_N];  /* array with tag-method names */
-} global_State;
+} global_State;//全局变量给所有线程分享
 
 
 /*
@@ -131,7 +131,7 @@ struct lua_State {
   GCObject *gclist;
   struct lua_longjmp *errorJmp;  /* current error recover point */
   ptrdiff_t errfunc;  /* current error handling function (stack index) */
-};
+};//每个线程的状态
 
 
 #define G(L)	(L->l_G)
