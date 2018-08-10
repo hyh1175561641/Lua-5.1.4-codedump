@@ -141,7 +141,7 @@ struct lua_State {
 ** Union of all collectable objects
 */
 union GCObject {
-  GCheader gch;
+  GCheader gch;//GCObject *next; lu_byte tt; lu_byte marked
   union TString ts;//4
   union Udata u;//7
   union Closure cl;//6
@@ -153,8 +153,8 @@ union GCObject {
 
 
 /* macros to convert a GCObject into a specific value */
-#define rawgco2ts(o)	check_exp((o)->gch.tt == LUA_TSTRING, &((o)->ts))
-#define gco2ts(o)	(&rawgco2ts(o)->tsv)
+#define rawgco2ts(o)	check_exp((o)->gch.tt == LUA_TSTRING, &((o)->ts))//字符串
+#define gco2ts(o)	(&rawgco2ts(o)->tsv)//字符串
 #define rawgco2u(o)	check_exp((o)->gch.tt == LUA_TUSERDATA, &((o)->u))
 #define gco2u(o)	(&rawgco2u(o)->uv)
 #define gco2cl(o)	check_exp((o)->gch.tt == LUA_TFUNCTION, &((o)->cl))
@@ -166,7 +166,7 @@ union GCObject {
 #define gco2th(o)	check_exp((o)->gch.tt == LUA_TTHREAD, &((o)->th))
 
 /* macro to convert any Lua object into a GCObject */
-#define obj2gco(v)	(cast(GCObject *, (v)))
+#define obj2gco(v)	(cast(GCObject *, (v)))//object转换为GCObject
 
 
 LUAI_FUNC lua_State *luaE_newthread (lua_State *L);

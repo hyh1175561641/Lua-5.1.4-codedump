@@ -9620,7 +9620,7 @@ typedef union TString {
 } TString;
 
 
-#define getstr(ts)	cast(const char *, (ts) + 1)
+#define getstr(ts)	cast(const char *, (ts) + 1)//TString *ts 字符串具体位置
 #define svalue(o)       getstr(rawtsvalue(o))
 
 

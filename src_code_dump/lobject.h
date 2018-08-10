@@ -201,7 +201,7 @@ typedef union TString {
   struct {
     CommonHeader;//GCObject *next; lu_byte tt; lu_byte marked
     lu_byte reserved;//非保留字符串被收回 书P19
-    unsigned int hash;//散列表对比值
+    unsigned int hash;//散列表hash值
     size_t len;//字符串长度
   } tsv;//Tstring values
 } TString;//字符串类型4
