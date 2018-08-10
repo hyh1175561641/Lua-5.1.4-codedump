@@ -15,7 +15,7 @@
 
 /* maximum length of a reserved word */
 #define TOKEN_LEN	(sizeof("function")/sizeof(char))
-
+//保留字的最大值
 
 /*
 * WARNING: if you change the order of this enumeration,
@@ -33,7 +33,7 @@ enum RESERVED {
 };
 
 /* number of reserved words */
-#define NUM_RESERVED	(cast(int, TK_WHILE-FIRST_RESERVED+1))//278-257+1
+#define NUM_RESERVED	(cast(int, TK_WHILE-FIRST_RESERVED+1))//278-257+1=22
 
 
 /* array with token `names' */

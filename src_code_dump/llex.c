@@ -42,7 +42,7 @@ const char *const luaX_tokens [] = {
     "..", "...", "==", ">=", "<=", "~=",
     "<number>", "<name>", "<string>", "<eof>",
     NULL
-};
+};//31个保留字
 
 // 保存同时读下一个字符
 #define save_and_next(ls) (save(ls, ls->current), next(ls))
