@@ -343,14 +343,14 @@ typedef struct Node {
 
 typedef struct Table {
   CommonHeader;
-  lu_byte flags;  /* 1<<p means tagmethod(p) is not present */ 
-  lu_byte lsizenode;  /* log2 of size of `node' array */
-  struct Table *metatable;
-  TValue *array;  /* array part */
-  Node *node;
-  Node *lastfree;  /* any free position is before this position */
+  lu_byte flags;  /* 1<<p means tagmethod(p) is not present */ //元方法数量
+  lu_byte lsizenode;  /* log2 of size of `node' array *///2的幂值
+  struct Table *metatable;//存放该表的原表
+  TValue *array;  /* array part *///指向数组部分的指针
+  Node *node;//数组首地址
+  Node *lastfree;  /* any free position is before this position *///数组末地址
   GCObject *gclist;
-  int sizearray;  /* size of `array' array */
+  int sizearray;  /* size of `array' array *///数组部分的大小
 } Table;//表5
 
 
@@ -361,7 +361,7 @@ typedef struct Table {
 // (size&(size-1))==0是检查size是2的次幂
 // (s) & ((size)-1)) = s % size
 #define lmod(s,size) \
-	(check_exp((size&(size-1))==0, (cast(int, (s) & ((size)-1)))))
+	(check_exp((size&(size-1))==0, (cast(int, (s) & ((size)-1)))))//取模运算
 
 
 #define twoto(x)	(1<<(x))
