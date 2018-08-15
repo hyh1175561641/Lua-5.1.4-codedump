@@ -65,9 +65,9 @@
 
 
 /*
-** number of ints inside a lua_Number
+** number of ints inside a lua_Number// double/int
 */
-#define numints		cast_int(sizeof(lua_Number)/sizeof(int))
+#define numints		cast_int(sizeof(lua_Number)/sizeof(int))//2
 
 
 
@@ -83,14 +83,14 @@ static const Node dummynode_ = {
 ** hash for lua_Numbers
 */
 // 对数字进行hash
-static Node *hashnum (const Table *t, lua_Number n) {
+static Node *hashnum (const Table *t, lua_Number n) {//typedef double lua_Number
   unsigned int a[numints];
   int i;
-  if (luai_numeq(n, 0))  /* avoid problems with -0 */
-    return gnode(t, 0);
-  memcpy(a, &n, sizeof(a));
-  for (i = 1; i < numints; i++) a[0] += a[i];
-  return hashmod(t, a[0]);
+  if (luai_numeq(n, 0))  /* avoid problems with -0 *///避免零
+    return gnode(t, 0);//数组首地址
+  memcpy(a, &n, sizeof(a));//把double复制到uint数组里
+  for (i = 1; i < numints; i++) a[0] += a[i];//把后面的数加进第一个数
+  return hashmod(t, a[0]);//hash值生成，返回数组index
 }
 
 

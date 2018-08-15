@@ -10,7 +10,7 @@
 #include "lobject.h"
 
 
-#define gnode(t,i)	(&(t)->node[i])
+#define gnode(t,i)	(&(t)->node[i])//数组index
 #define gkey(n)		(&(n)->i_key.nk)
 #define gval(n)		(&(n)->i_val)
 #define gnext(n)	((n)->i_key.nk.next)
